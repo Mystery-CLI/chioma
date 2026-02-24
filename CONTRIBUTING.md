@@ -11,6 +11,7 @@ Thank you for your interest in contributing to Chioma! We welcome contributions 
   - [Backend (NestJS)](#backend-nestjs)
   - [Frontend (Next.js)](#frontend-nextjs)
   - [Smart Contracts (Soroban)](#smart-contracts-soroban)
+- [Local Pipeline Validation](#local-pipeline-validation)
 - [Code Style](#code-style)
 - [Pull Request Process](#pull-request-process)
 
@@ -103,6 +104,60 @@ Located in `contract/`.
     cargo fmt
     ```
 
+## Local Pipeline Validation
+
+Before submitting a pull request, you should run the local validation scripts to ensure your code will pass all CI/CD checks. Each sub-project has a `check-all.sh` script that mirrors the exact steps performed by GitHub Actions.
+
+### Running Validation Scripts
+
+**Frontend:**
+```bash
+cd frontend
+./check-all.sh
+```
+
+This script will:
+1. Install dependencies with `pnpm install --frozen-lockfile`
+2. Check code formatting with `pnpm run format:check`
+3. Run ESLint with `pnpm run lint`
+4. Build the project with `pnpm run build`
+
+**Backend:**
+```bash
+cd backend
+./check-all.sh
+```
+
+This script will:
+1. Install dependencies with `pnpm install --frozen-lockfile`
+2. Check code formatting with Prettier
+3. Run ESLint with `pnpm run lint`
+4. Run TypeScript type checking with `tsc --noEmit`
+5. Run unit tests with `pnpm run test`
+6. Build the project with `pnpm run build`
+
+**Contract:**
+```bash
+cd contract
+./check-all.sh
+```
+
+This script will:
+1. Check code formatting with `cargo fmt --all -- --check`
+2. Run Clippy linter with `cargo clippy --all-targets --all-features -- -D warnings`
+3. Run tests with `cargo test --locked`
+4. Build WASM target with `cargo build --target wasm32-unknown-unknown --release`
+
+### Why Use These Scripts?
+
+Running these scripts locally helps you:
+- ✅ Catch issues before pushing to GitHub
+- ✅ Reduce CI/CD pipeline failures
+- ✅ Speed up the review process
+- ✅ Ensure consistent code quality
+
+**Note:** On Windows, you may need to run these scripts using Git Bash or WSL. Alternatively, you can run the individual commands listed above manually.
+
 ## Code Style
 
 -   **JavaScript/TypeScript**: We use **Prettier** and **ESLint**. Run `pnpm format` or `pnpm lint` before committing.
@@ -110,10 +165,18 @@ Located in `contract/`.
 
 ## Pull Request Process
 
-1.  Fork the repository and creating a new branch for your feature or fix.
-2.  Ensure all tests pass locally.
-3.  Submit a Pull Request (PR) with a clear description of your changes.
-4.  Link any relevant issues in your PR description.
-5.  Wait for review and address any feedback.
+1.  Fork the repository and create a new branch for your feature or fix.
+2.  **Run the validation script** for your sub-project (`./check-all.sh`) to ensure all checks pass locally.
+3.  Ensure all tests pass and code follows our style guidelines.
+4.  Submit a Pull Request (PR) with a clear description of your changes.
+5.  Link any relevant issues in your PR description.
+6.  Wait for review and address any feedback.
+
+**Before submitting your PR, make sure:**
+- ✅ You've run the appropriate `check-all.sh` script
+- ✅ All tests pass
+- ✅ Code is properly formatted
+- ✅ No linting errors
+- ✅ Build succeeds
 
 Thank you for contributing to Chioma!
